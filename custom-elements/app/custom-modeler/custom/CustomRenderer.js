@@ -4,7 +4,8 @@ var inherits = require('inherits');
 
 var BaseRenderer = require('diagram-js/lib/draw/BaseRenderer');
 
-var componentsToPath = require('diagram-js/lib/util/RenderUtil').componentsToPath;
+var componentsToPath = require('diagram-js/lib/util/RenderUtil').componentsToPath,
+    createLine = require('diagram-js/lib/util/RenderUtil').createLine;
 
 
 /**
@@ -25,7 +26,10 @@ function CustomRenderer(eventBus, styles) {
       return self.drawTriangle(p, element.width);
     },
     'custom:circle': function(p, element, attrs) {
-      return self.drawCircle(p, element.width, element.height,  attrs);
+      return self.drawCircle(p, element.width, element.height, attrs);
+    },
+    'custom:connection': function (p, element, attrs) {
+      return self.drawCustomConnection(p, element, attrs);
     }
   };
 
@@ -89,6 +93,32 @@ function CustomRenderer(eventBus, styles) {
     return componentsToPath(circlePath);
   };
 
+  this.drawCustomConnection = function(p, element, attrs) {
+    attrs = computeStyle(attrs, {
+      stroke: '#ff471a',
+      strokeWidth: 2
+    });
+
+    return createLine(element.waypoints, attrs).appendTo(p);
+  }
+
+  this.getConnectionPath = function(connection) {
+
+      var waypoints = connection.waypoints;
+
+      var connectionPath = [
+        ['M', waypoints[0].x, waypoints[0].y]
+      ];
+
+      waypoints.forEach(function(waypoint, index) {
+        if (index !== 0) {
+          connectionPath.push(['L', waypoint.x, waypoint.y]);
+        }
+      });
+
+      return componentsToPath(connectionPath);
+  }
+
 }
 
 inherits(CustomRenderer, BaseRenderer);
@@ -123,7 +153,8 @@ CustomRenderer.prototype.getShapePath = function(element) {
 
   var shapes = {
     triangle: this.getTrianglePath,
-    circle: this.getCirclePath
+    circle: this.getCirclePath,
+    connection: this.getConnectionPath
   };
 
   return shapes[type](element);

@@ -57,6 +57,37 @@ function CustomUpdater(eventBus, bpmnjs) {
     assign(businessObject, pick(shape, [ 'x', 'y' ]));
   }
 
+  function updateCustomConnection(e) {
+
+    var context = e.context,
+        connection = context.connection,
+        source = connection.source,
+        target = connection.target,
+        businessObject = connection.businessObject;
+
+    var parent = connection.parent;
+
+    var customElements = bpmnjs._customElements;
+
+    // make sure element is added / removed from bpmnjs.customElements
+    if (!parent) {
+      Collections.remove(customElements, businessObject);
+    } else {
+      Collections.add(customElements, businessObject);
+    }
+
+    // update waypoints
+    assign(businessObject, pick(connection, 'waypoints'));
+
+    if (source && target) {
+      assign(businessObject, {
+        source: source.id,
+        target: target.id
+      });
+    }
+
+  }
+
   this.executed([
     'shape.create',
     'shape.move',
@@ -68,6 +99,26 @@ function CustomUpdater(eventBus, bpmnjs) {
     'shape.move',
     'shape.delete'
   ], ifCustomElement(updateCustomElement));
+
+  this.executed([
+    'connection.create',
+    'connection.reconnectStart',
+    'connection.reconnectEnd',
+    'connection.updateWaypoints',
+    'connection.delete',
+    'connection.layout',
+    'connection.move'
+  ], ifCustomElement(updateCustomConnection));
+
+  this.reverted([
+    'connection.create',
+    'connection.reconnectStart',
+    'connection.reconnectEnd',
+    'connection.updateWaypoints',
+    'connection.delete',
+    'connection.layout',
+    'connection.move'
+  ], ifCustomElement(updateCustomConnection));
 
 }
 
