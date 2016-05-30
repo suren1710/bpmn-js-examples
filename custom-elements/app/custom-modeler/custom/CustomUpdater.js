@@ -10,21 +10,6 @@ var CommandInterceptor = require('diagram-js/lib/command/CommandInterceptor');
 var Collections = require('diagram-js/lib/util/Collections');
 
 
-function isCustom(element) {
-  return element && /custom\:/.test(element.type);
-}
-
-function ifCustomElement(fn) {
-  return function(event) {
-    var context = event.context,
-        element = context.shape || context.connection;
-
-    if (isCustom(element)) {
-      fn(event);
-    }
-  };
-}
-
 /**
  * A handler responsible for updating the custom element's businessObject
  * once changes on the diagram happen.
@@ -38,7 +23,7 @@ function CustomUpdater(eventBus, bpmnjs) {
         shape = context.shape,
         businessObject = shape.businessObject;
 
-    if (!isCustom(shape, 'custom:triangle')) {
+    if (!isCustom(shape)) {
       return;
     }
 
@@ -77,7 +62,9 @@ function CustomUpdater(eventBus, bpmnjs) {
     }
 
     // update waypoints
-    assign(businessObject, pick(connection, 'waypoints'));
+    assign(businessObject, {
+      waypoints: copyWaypoints(connection)
+    });
 
     if (source && target) {
       assign(businessObject, {
@@ -127,3 +114,27 @@ inherits(CustomUpdater, CommandInterceptor);
 module.exports = CustomUpdater;
 
 CustomUpdater.$inject = [ 'eventBus', 'bpmnjs' ];
+
+
+/////// helpers ///////////////////////////////////
+
+function copyWaypoints(connection) {
+  return connection.waypoints.map(function(p) {
+    return { x: p.x, y: p.y };
+  });
+}
+
+function isCustom(element) {
+  return element && /custom\:/.test(element.type);
+}
+
+function ifCustomElement(fn) {
+  return function(event) {
+    var context = event.context,
+        element = context.shape || context.connection;
+
+    if (isCustom(element)) {
+      fn(event);
+    }
+  };
+}

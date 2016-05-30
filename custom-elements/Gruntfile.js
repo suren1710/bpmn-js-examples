@@ -39,8 +39,10 @@ module.exports = function(grunt) {
     browserify: {
       options: {
         browserifyOptions: {
-          // make sure we do not include browser shims unnecessarily
-          builtins: false,
+          debug: true,
+          // strip unnecessary built-ins
+          builtins: [ 'events' ],
+          // make sure we do not include Node stubs unnecessarily
           insertGlobalVars: {
             process: function () {
                 return 'undefined';
@@ -148,5 +150,5 @@ module.exports = function(grunt) {
 
   grunt.registerTask('auto-test', [ 'karma:unit' ]);
 
-  grunt.registerTask('default', [ 'jshint', 'build' ]);
+  grunt.registerTask('default', [ 'jshint', 'test', 'build' ]);
 };

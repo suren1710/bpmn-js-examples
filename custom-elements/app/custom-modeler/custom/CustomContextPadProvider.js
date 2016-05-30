@@ -4,8 +4,9 @@ var inherits = require('inherits');
 
 var ContextPadProvider = require('bpmn-js/lib/features/context-pad/ContextPadProvider');
 
+var isAny = require('bpmn-js/lib/features/modeling/util/ModelingUtil').isAny;
+
 var assign = require('lodash/object/assign'),
-    forEach = require('lodash/collection/forEach'),
     bind = require('lodash/function/bind');
 
 function CustomContextPadProvider(contextPad, modeling, elementFactory, connect,
@@ -40,7 +41,7 @@ function CustomContextPadProvider(contextPad, modeling, elementFactory, connect,
     }
 
     return actions;
-  }
+  };
 }
 
 inherits(CustomContextPadProvider, ContextPadProvider);
@@ -58,15 +59,3 @@ CustomContextPadProvider.$inject = [
 ];
 
 module.exports = CustomContextPadProvider;
-
-function isAny(businessObject, types) {
-  var isAny = false;
-
-  forEach(types, function(type) {
-    if (businessObject.type === type) {
-      isAny = true;
-    }
-  });
-
-  return isAny;
-}

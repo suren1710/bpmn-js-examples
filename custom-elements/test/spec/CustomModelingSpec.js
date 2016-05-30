@@ -73,7 +73,6 @@ describe('custom modeling', function() {
 
       // then
       expect(allowed).to.be.false;
-
     }));
 
 
@@ -88,8 +87,8 @@ describe('custom modeling', function() {
       // then
       expect(customElement.businessObject.x).to.equal(500);
       expect(customElement.businessObject.y).to.equal(350);
-
     }));
+
 
     it('should remove deleted shape from _customElements', inject(function(bpmnjs, elementRegistry, modeling) {
 
@@ -102,7 +101,6 @@ describe('custom modeling', function() {
 
       // then
       expect(customElements.length).to.equal(0);
-
     }));
 
   });
@@ -120,7 +118,6 @@ describe('custom modeling', function() {
       };
 
       bpmnjs.addCustomElements([ customShape ]);
-
     }));
 
 
@@ -141,7 +138,6 @@ describe('custom modeling', function() {
       });
 
       expect(ids).to.include('CustomConnection_1');
-
     }));
 
 
@@ -169,7 +165,6 @@ describe('custom modeling', function() {
       expect(taskShape.outgoing.length).to.equal(1);
 
       expect(bpmnjs.getCustomElements().length).to.equal(2);
-
     }));
 
 
@@ -187,7 +182,6 @@ describe('custom modeling', function() {
 
       // then
       expect(allowed).to.be.false;
-
     }));
 
 
@@ -217,7 +211,6 @@ describe('custom modeling', function() {
       // then
       expect(customConnection.source).to.equal(customCircle);
       expect(customConnection.target).to.equal(taskShape);
-
     }));
 
 
@@ -239,7 +232,6 @@ describe('custom modeling', function() {
       // then
       expect(customConnection.source).to.equal(customShape);
       expect(customConnection.target).to.equal(taskShape2);
-
     }));
 
 
@@ -256,24 +248,9 @@ describe('custom modeling', function() {
 
       // then
       expect(customConnection.businessObject.waypoints).to.eql([
-        {
-          original: {
-            x: 620,
-            y: 370
-          },
-          x: 613,
-          y: 364
-        },
-        {
-          original: {
-            x: 307,
-            y: 120
-          },
-          x: 351,
-          y: 156
-        }
+        { x: 613, y: 364 },
+        { x: 351, y: 156 }
       ]);
-
     }));
 
 
@@ -291,7 +268,6 @@ describe('custom modeling', function() {
 
       // then
       expect(customElements.length).to.equal(1);
-
     }));
 
   });
